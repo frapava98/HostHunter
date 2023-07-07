@@ -348,15 +348,12 @@ def write_results():
     # Output File Naming & Path
     if not args.output:
         base_path = "hh_"+ datetime.now().strftime("%d_%m_%Y-%H.%M.%S")
-    appsf = open(args.output+base_path+".webapps", "wt")  # Write File
-    vhostsf = open(args.output+base_path+".vhosts", "wt")
-    vhostsf_csv = open(args.output+base_path+".vhosts.csv", "wt")
-    nessusf = open(args.output+base_path+".nessus", 'wt')
 
     for format in list_format:
         match format:
             case "csv":
                 # Write Header in CSV File
+                vhostsf_csv = open(args.output, "wt")
                 vhostsf_csv.write(
                     "\"" +
                     "IP Address" +
@@ -377,34 +374,38 @@ def write_results():
                         hostnames = ','.join(data_dict[item].hname)
                         row = "\"" + data_dict[item].address + "\"," + "\"443/tcp\"" + \
                         "," + "\"" + hostnames + "\",\"\",\"\",\"\"" + "\n"
-                    vhostsf_csv.write(row)
+                        vhostsf_csv.write(row)
+                vhostsf_csv.close()
             case "nessus":
                 # Nessus Function  - Generates IP/Hostname pairs in Nessus tool format.
+                nessusf = open(args.output, 'wt')
                 for item in data_dict:
                     for host in data_dict[item].hname:
                         row = host + "[" + data_dict[item].address + "], "
                         nessusf.write(row)
                     if not data_dict[item].hname:
                         nessusf.write(data_dict[item].address)
-                    nessusf.close()
+                nessusf.close()
 
             case "txt":
+                # Write Results in TXT File
+                vhostsf = open(args.output, "wt")
                 for item in data_dict:
                     for hname in data_dict[item].hname:
                         vhostsf.write(hname + "\n")
-                    vhostsf.close()
+                vhostsf.close()
 
-    # Write Results in TXT File
-    for item in data_dict:
-        #print(data_dict[item].address)
-
-
-        if (data_dict[item].apps):
-            apps = ','.join(data_dict[item].apps)
-            row = "\"" + data_dict[item].address
-            + "\"," + "\"" + apps + "\"" + "\n"
-            appsf.write(row)
-    # Write Results in HTML File
+            case "apps":
+                appsf = open(args.output, "wt")
+                for item in data_dict:
+                    #print(data_dict[item].address)
+                    if (data_dict[item].apps):
+                        apps = ','.join(data_dict[item].apps)
+                        row = "\"" + data_dict[item].address
+                        + "\"," + "\"" + apps + "\"" + "\n"
+                        appsf.write(row)
+                appsf.close()
+    
 
 
 # stats Function - Prints Statistics cause metrics are fun
