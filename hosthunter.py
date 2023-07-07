@@ -374,7 +374,7 @@ def write_results():
                         hostnames = ','.join(data_dict[item].hname)
                         row = "\"" + data_dict[item].address + "\"," + "\"443/tcp\"" + \
                         "," + "\"" + hostnames + "\",\"\",\"\",\"\"" + "\n"
-                        vhostsf_csv.write(row)
+                    vhostsf_csv.write(row)
                 vhostsf_csv.close()
             case "nessus":
                 # Nessus Function  - Generates IP/Hostname pairs in Nessus tool format.
